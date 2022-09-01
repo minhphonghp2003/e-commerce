@@ -15,7 +15,4 @@ app.use(express.json())
 app.use('/user',user.router)
 
 
-app.listen(port, () => {
-
-  console.log(`Example app listening on port ${port}`)
-})
+app.listen(port)
