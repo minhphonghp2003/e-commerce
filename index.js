@@ -13,9 +13,7 @@ app.use(express.json())
 
 
 app.use('/user',user.router)
-app.get('/',(req,res)=>{
-  res.send("HOME");
-})
+
 
 app.listen(port, () => {
 
