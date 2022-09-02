@@ -68,10 +68,10 @@ const updateUser = async (data) => {
   }
 }
 
-const updatePassword = async (password, username) => {
+const updatePassword = async (username,password) => {
   try {
-    const hash = await bcrypt.hash(data.password, saltRounds)
-    await pool.query("UPDATE public.user SET  password = $1 WHERE username = $2;", [password, username])
+    const hash = await bcrypt.hash(password, saltRounds)
+    await pool.query("UPDATE public.user SET  password = $1 WHERE username = $2;", [hash, username])
     return
 
   } catch (error) {
