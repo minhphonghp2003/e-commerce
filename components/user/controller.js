@@ -2,7 +2,6 @@ import db from './DAL.js'
 import { keygen } from '../../libraries/jwt.js';
 
 
-
 const register = async (req, res, next) => {
     try {
         let id = await db.addUser(req.body)
@@ -41,5 +40,15 @@ const updateUser = async (req, res, next) => {
     }
 }
 
+const updatePassword = async (req,res,next)=>{
+    try {
+        let {username, password} = req.body
+        await db.updatePassword(username,password)
+        return res.status(200).send("DONE")
+    } catch (error) {
+       next(error) 
+    }
+}
 
-export default { register, login, updateUser }
+
+export default { register, login, updateUser, updatePassword }

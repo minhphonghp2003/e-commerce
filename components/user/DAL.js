@@ -68,5 +68,16 @@ const updateUser = async (data) => {
   }
 }
 
+const updatePassword = async (password, username) => {
+  try {
+    const hash = await bcrypt.hash(data.password, saltRounds)
+    await pool.query("UPDATE public.user SET  password = $1 WHERE username = $2;", [password, username])
+    return
 
-export default { updateUser, getUserBy, addUser, checkAvailableUser };
+  } catch (error) {
+
+    throw new Error(error)
+  }
+}
+
+export default { updateUser, getUserBy, addUser, checkAvailableUser, updatePassword };

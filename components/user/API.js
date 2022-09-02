@@ -8,6 +8,7 @@ const router = express.Router()
 
 router.post('/register', cors({origin:'*'}), ctrler.register)
 router.post('/login', cors({origin:'*'}), ctrler.login)
+router.put('/password', cors({origin:'*'}), ctrler.updatePassword)
 router.put('/update', cors({origin:'*'}),middleware.checkAuth, ctrler.updateUser)
 
 export default {router}
