@@ -4,7 +4,7 @@ import fs from 'fs'
 const checkAuth = async (req, res,next) => {
     let token = req.headers.token
     
-    var cert = fs.readFileSync('/etc/secrets/public.pem'); 
+    var cert = fs.readFileSync(process.env.publickey); 
     jwt.verify(token, cert, function (err, decoded) {
         if(err){
             next(err)
