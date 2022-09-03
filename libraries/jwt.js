@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import fs from 'fs'
 import 'dotenv/config'
 
-let privateKey = fs.readFileSync(process.env.privateKey)
+let privateKey = fs.readFileSync(process.env.privatekey)
 
 
 const keygen =async (id, role) => {
