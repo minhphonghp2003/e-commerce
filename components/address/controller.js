@@ -1,13 +1,13 @@
 import db from './DAL.js'
 
-const getAddress = async(req,res,next) =>{
+const deleteAddress = async(req,res,next) =>{
     try {
-        let id = req.query.id
-       let address = await db.getAddress(id) 
-       if(!address){
-        return res.status(404).send("No address found")
-       }
-       return res.status(200).json(address)
+      let id = req.body.id
+
+      console.log(req.body.id);
+      await db.delAddress(id) 
+      return res.status(200).send("Done")
+      
     } catch (error) {
        next(error) 
     }
@@ -15,8 +15,8 @@ const getAddress = async(req,res,next) =>{
 
 const addAddress = async (req,res,next) =>{
     try {
-       await db.addAddress(req.body)  
-       return res.status(200).send("DONE")
+       let addr_id = await db.addAddress(req.body)  
+       return res.status(200).send({addr_id})
     } catch (error) {
        next(error) 
     }
@@ -32,4 +32,4 @@ const updateAddress = async (req,res,next) =>{
 }
 
 
-export default { addAddress,updateAddress, getAddress}
+export default { addAddress,updateAddress, deleteAddress}

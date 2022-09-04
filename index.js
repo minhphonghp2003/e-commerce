@@ -18,7 +18,7 @@ app.use('/address', address.router)
 
 
 app.use((err, req, res, next) => {
-  res.status(500).send(err.stack)
+  res.status(400).send(err.stack)
 })
 
 app.use((req, res, next) => {
