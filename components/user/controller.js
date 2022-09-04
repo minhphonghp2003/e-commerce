@@ -50,5 +50,4 @@ const updatePassword = async (req,res,next)=>{
     }
 }
 
-
-export default { register, login, updateUser, updatePassword }
+export default { register, login, updateUser, updatePassword}

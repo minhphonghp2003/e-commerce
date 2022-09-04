@@ -71,7 +71,11 @@ const updateUser = async (data) => {
 const updatePassword = async (username,password) => {
   try {
     const hash = await bcrypt.hash(password, saltRounds)
-    await pool.query("UPDATE public.user SET  password = $1 WHERE username = $2;", [hash, username])
+    let row= await pool.query("UPDATE public.user SET  password = $1 WHERE username = $2;", [hash, username])
+    if(!row.rowCount){
+      throw new Error("No username found")
+    }
+
     return
 
   } catch (error) {
@@ -79,5 +83,8 @@ const updatePassword = async (username,password) => {
     throw new Error(error)
   }
 }
+
+
+
 
 export default { updateUser, getUserBy, addUser, checkAvailableUser, updatePassword };
