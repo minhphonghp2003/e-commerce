@@ -18,7 +18,6 @@ const delAddress = async(id)=>{
       throw new Error("No rows affected")
     
     }
-    console.log(data);
     return
 }
 
