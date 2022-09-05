@@ -73,15 +73,22 @@ const getComment = async (req, res, next) => {
         let data = await db.getComment(req.query.product_id, req.query.customer_id)
         let images = []
         
-        data.images.forEach(async img => {
-            
-            const getRef = ref(storage,img)
+        for await  (img of data.images) {
+
+
+            const getRef = ref(storage, img)
             let buffer = await getBytes(getRef)
-         
-            images.push(buffer)
-        });
-        // data.images = images
-        
+            console.log(Date.now());
+            images.push(Buffer.from(buffer))
+            console.log(images);
+
+
+        }
+
+        console.log(Date.now());
+        console.log("iamge ",images);
+        data.images = images
+
         return res.status(200).json(data)
 
     } catch (error) {
