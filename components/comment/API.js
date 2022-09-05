@@ -8,8 +8,10 @@ const upload = multer({storage:multer.memoryStorage()})
 
 const router = express.Router()
 
-router.post('/image', cors({origin:'*'}),middleware.checkAuth,upload.array('cmt_image'), ctrler.addComment)
-router.delete('/image', cors({origin:'*'}),middleware.checkAuth, ctrler.delComment)
+router.get('/', cors({origin:'*'}),middleware.checkAuth, ctrler.getComment)
+router.post('/', cors({origin:'*'}),middleware.checkAuth,upload.array('cmt_image'), ctrler.addComment)
+router.delete('/', cors({origin:'*'}),middleware.checkAuth, ctrler.delComment)
+router.put('/', cors({origin:'*'}),middleware.checkAuth,upload.array('cmt_image'), ctrler.updateComment)
 
 
 export default {router}
