@@ -16,10 +16,12 @@ const addComment = async (req, res, next) => {
             let storageRef = ref(storage, dest_storage)
             let bytes = image.buffer
             await uploadBytes(storageRef, bytes)
-            
+            // console.log(Date.now(), images);
+
 
         });
         let id = await db.addComment(comment, images)
+        // console.log(Date.now(), id);
 
         return res.status(200).json({ id })
 
@@ -73,18 +75,20 @@ const getComment = async (req, res, next) => {
     try {
         let data = await db.getComment(req.query.product_id, req.query.customer_id)
         let images = []
-       
-            data.images.forEach(async img => {
-                let getRef = ref(storage, img)
-                let buffer = await getBytes(getRef)
 
-                images.push(Buffer.from(buffer))
-                console.log(Date.now(), images);
 
-            })
+        data.images.forEach(async img => {
+            let getRef = ref(storage, img)
+            let buffer = await getBytes(getRef)
+
+            images.push(Buffer.from(buffer))
+            data.images = images
+            console.log(data);
+        })
 
 
         return res.status(200).json(data)
+
 
     } catch (error) {
         next(error)
