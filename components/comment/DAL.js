@@ -39,7 +39,7 @@ const delComment = async (id) => {
 const updateComment = async (comment, images) => {
   let old_images = await pool.query("select image from public.comment_image where comment_id = $1",[comment.id])
   let row = await pool.query("update public.comment set content = $1, rate  = $2 where product_id = $3 and customer_id = $4", [comment.content, comment.rate,comment.product_id, comment.customer_id])
-  await pool.query('update public.comment_image set image = $1', [images])
+  await pool.query('update public.comment_image set image = $1 where comment_id = $2', [images,comment.id])
   if (!row.rowCount) {
     throw new Error("No row deleted")
 
@@ -47,10 +47,9 @@ const updateComment = async (comment, images) => {
   return old_images.rows[0].image
 }
 
-const getComment = async (product_id, customer_id)=>{
-  let comments = (await pool.query("select * from public.comment where product_id = $1 and customer_id = $2",[product_id, customer_id])).rows
-  let images = (await pool.query("select image from public.comment_image where comment_id = $1",[comments[0].id])).rows[0].image
-  return {comments, images}
+const getComment = async (product_id)=>{
+  let comments = (await pool.query("select * from public.comment as c join comment_image ci on c.id = ci.comment_id where product_id = $1",[product_id])).rows
+  return comments
 }
 
 
