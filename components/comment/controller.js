@@ -6,6 +6,7 @@ const addComment = async (req, res, next) => {
         let comment = req.body
         comment.customer_id = req.data.id
         let id = await svc.addComment(comment, req.files)
+
         return res.status(200).json({ id })
 
     } catch (error) {
@@ -43,6 +44,7 @@ const getComment = async (req, res, next) => {
     try {
         let data = await svc.getComment(req.query.product_id)
         return res.status(200).json(data)
+
 
     } catch (error) {
         next(error)
