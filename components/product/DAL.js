@@ -11,32 +11,58 @@ const pool = new Pool({
   port: process.env.PGPORT,
 })
 
-const addProduct = async (product) =>{
+const addProduct = async (product) => {
   const pid = uuidv4()
+  product.status = 'pending'
 
-  await pool.query("insert into public.product values ($1, $2,$3,$4,$5,$6,$7,$8,$9)",[product.sku, product.name, product.price,product.category, product.id, product.description, product.date_end , product.bid, product.seller])
+
+  await pool.query("insert into public.product values ($1, $2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)", [product.sku, product.name,
+  product.price, product.category, product.id, product.description,
+  product.date_end, product.seller, product.status, product.condition,
+  product.min_increase, product.max_increase])
   return pid
 }
 
-const updateProduct = async (product) =>{
-  let row = ( await pool.query("update public.product set name = $1, category = $2, description = $3, date_end = $4 where id = $5",[product.name, product.category, product.description, product.date_end, product.id])).rowCount
-  return row
-}
 
-const getProduct = async (id)=>{
-  let data = await pool.query("select * from public.product p inner join public.category c on p.category = c.id where p.id = $1",[id])
+const getAllProduct = async (cate) => {
+  let data = await pool.query("select sku, name, date_end, status, image[0] from public.product  p inner join public.product_image as i on p.id  = i.product_id ")
+  if (cate) {
+    data = await pool.query("select sku, name, date_end, status, image[0] from public.product  p inner join public.product_image as i on p.id  = i.product_id where p.category = $1", [cate])
+  }
   return data.rows
+
 }
 
-const delProduct = async (id)=>{
+const getProduct = async (id) => {
+
+  let data = await pool.query('select *,ARRAY_LENGTH("bidder",1) as bidder_count from public.product p inner join public.category c on p.category = c.id left join public.product_image i on p.id = i.product_id where p.id = $1', [id])
+  let bidders = await pool.query("select id,fullname from (select unnest(bidder) as b from public.product where id = $1)  b join public.user u on b.b = u.id ",[id])
+  return { prod: data.rows, bidders }
+}
+
+
+
+
+const delproduct = async (id) => {
   let row = (await pool.query("delete from public.product where id = $1", [id])).rowCount
   return row
 }
 
-const getCategory = async ()=>{
-  let allCate = await pool.query("select cate from public.category")
-  return allCate.rows
+
+
+// -------------category-----------------------
+
+
+
+const getCategory = async () => {
+  let allcate = await pool.query("select cate from public.category")
+  return allcate.rows
+}
+
+const addCategory = async (cate) => {
+  await pool.query("insert into public.category (cate) values ($1)", [cate])
+  return
 }
 
 
-export default { addProduct, updateProduct,getProduct, delProduct, getCategory  }
+export default { addProduct, delproduct, getCategory, getAllProduct, getProduct, addCategory }
