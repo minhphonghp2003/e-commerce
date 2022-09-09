@@ -33,7 +33,6 @@ const getAllProduct = async (cate) => {
 
 }
 
-// const updateProduct = async ()
 
 const getProduct = async (id) => {
 
@@ -62,7 +61,7 @@ const addBid = async (product_id, customer_id, shipping_address, price) => {
 }
 
 const getWinner = async (product_id) => {
-  let data = await pool.query("select * from public.product p join public.bidder b on p.id = b.product join public.user u on b.bidder = u.id where p.id = $1 order by price", [product_id])
+  let data = await pool.query("select fullname,b.price,p.name,description,sku from public.product p join public.bidder b on p.id = b.product join public.user u on b.bidder = u.id where p.id = $1 order by price desc", [product_id])
   return data.rows[0]
 
 }
