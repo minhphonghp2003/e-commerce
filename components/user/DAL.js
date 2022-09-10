@@ -15,24 +15,19 @@ const pool = new Pool({
   port: process.env.PGPORT,
 })
 
-const getAllUser = async ()=>{
+const getAllUser = async () => {
   return (await pool.query("select * from public.user")).rows
 }
 
-const getUserBy = async (id, username) => {
-  let res
-  //  get product
-  if (id) {
-    res = await pool.query("select * from public.user where id = $1", [id]);
+const getUserBy = async (id) => {
 
-  }
-  else if (username) {
-    res = await pool.query("select * from public.user where username = $1", [username]);
-  }
 
-  let default_shipping = await pool.query("select * from public.address where id = $1", [res.rows[0].default_shipping_address])
-  res.rows[0].default_shipping_address = default_shipping.rows[0]
-  return res.rows[0];
+ let  product = await pool.query("select sku, name, date_end, status, image[0] as image from public.product  p inner join public.product_image as i on p.id  = i.product_id where p.seller = $1", [id])
+ let  user = await pool.query("select * from public.user where id = $1", [id]);
+
+  let default_shipping = await pool.query("select * from public.address where id = $1", [user.rows[0].default_shipping_address])
+  user.rows[0].default_shipping_address = default_shipping.rows[0]
+  return {user: user.rows[0], product : product.rows}
 
 }
 
@@ -48,20 +43,17 @@ const addUser = async ({ username, password, fullname, phone, email }) => {
   }
 }
 
-const checkAvailableUser = async (username, password) => {
+const getAvailableUserCred= async (username, password) => {
 
-  let hash = await pool.query("select password from public.user where username = $1", [username])
-  let isValid = await bcrypt.compare(password, hash.rows[0].password)
-  return isValid
+  let cre = await pool.query("select role, id, password from public.user where username = $1", [username])
+  let isValid = await bcrypt.compare(password, cre.rows[0].password)
+  return {isValid,id:cre.rows[0].id,role:cre.rows[0].role}
 
 }
 
 const updateUser = async (data) => {
-
-
-  const hash = await bcrypt.hash(data.password, saltRounds)
-  data.password = hash
-  await pool.query("UPDATE public.user SET  password = $2 , fullname = $3,phone= $6, email =$4 ,country = $5,default_shipping_address=$7, role = $8 WHERE id = $1;", Object.values(data))
+  console.log(data);
+  await pool.query("UPDATE public.user SET  fullname = $1,phone= $2, email =$3 ,country = $4,default_shipping_address=$5, role = $6 WHERE id = $7;", Object.values(data))
   return
 
 }
@@ -82,4 +74,4 @@ const updatePassword = async (username, password) => {
 
 
 
-export default { updateUser, getUserBy, addUser, checkAvailableUser, updatePassword, getAllUser };
+export default { updateUser, getUserBy, addUser, getAvailableUserCred, updatePassword, getAllUser };

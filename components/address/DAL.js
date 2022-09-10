@@ -29,7 +29,7 @@ const addAddress = async(addr)=>{
 }
 
 const updateAddress = async (data)=>{
-  let rowCount = (await pool.query("update public.address set city =$2 , district = $3, commune_ward = $4, street =$5  where id = $1 ", Object.values(data))).rowCount
+  let rowCount = (await pool.query("update public.address set city =$1 , district = $2, commune_ward = $3, street =$4  where id = $5 ", Object.values(data))).rowCount
   if(!rowCount) {
     
 
@@ -38,4 +38,8 @@ const updateAddress = async (data)=>{
   return
 }
 
-export default { addAddress, updateAddress, delAddress}
+const getAddress = async(id) =>{
+  return (await pool.query("select * from public.address where id = $1",[id])).rows[0]
+}
+
+export default { addAddress, updateAddress, delAddress,getAddress}

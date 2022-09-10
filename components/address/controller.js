@@ -24,12 +24,22 @@ const addAddress = async (req,res,next) =>{
 
 const updateAddress = async (req,res,next) =>{
     try {
-       await db.updateAddress(req.body) 
+       let data = req.body
+       await db.updateAddress(data) 
        return res.status(200).send("DONE")
     } catch (error) {
        next(error) 
     }
 }
 
+const getAddress = async(req,res,next)=>{
+   try {
+      let id = req.query.id 
+      let addr = await db.getAddress(id)
+      return res.status(200).json(addr)
+   } catch (error) {
+     next(error) 
+   }
+}
 
-export default { addAddress,updateAddress, deleteAddress}
+export default { addAddress,updateAddress, deleteAddress, getAddress}

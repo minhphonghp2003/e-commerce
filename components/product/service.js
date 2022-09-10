@@ -22,18 +22,23 @@ const addProduct = async (product, files) => {
 }
 
 const getAllProduct = async (cate, status, page) => {
-    let products = await db.getAllProduct(cate)
+
+    let products = await db.getAllProduct()
     if (status) {
-        for (i of products) {
-            if (i.status != status) {
-                products.splice(i)
+        for (let i = 0; i < products.length; i++) {
+            if (products[i].status != status) {
+   
+                products.splice(i,1)
+
+                i--
             }
         }
     }
     if (cate) {
-        for (i of products) {
-            if (i.cate != cate) {
-                products.splice(i)
+        for (let i = 0; i < products.length; i++) {
+            if (products[i].category != cate) {
+                products.splice(i,1)
+                i--
             }
         }
     }
@@ -41,18 +46,21 @@ const getAllProduct = async (cate, status, page) => {
     await (async () => {
 
         for (const p of products) {
-
             let img = p.image
-            let getRef = ref(storage, img)
-            let buffer = await getBytes(getRef)
 
-            d.image = buffer
+            if (img) {
+                let getRef = ref(storage, img)
+                let buffer = await getBytes(getRef)
+              
+                p.image = Buffer.from(buffer)
+
+            }
 
         }
 
 
     })()
-    
+
     let firstPageElement = PAGINATE * (page - 1)
     let lastPageElement = firstPageElement + PAGINATE
     if (lastPageElement > products.length) {
@@ -67,16 +75,17 @@ const getAllProduct = async (cate, status, page) => {
 const getProduct = async (id) => {
 
     let product = await db.getProduct(id)
+
     product.bidder_count = product.bidders.length
 
     await (async () => {
 
-        for (const i of product.prod.image) {
+        for (let i of product.prod.image) {
 
             let getRef = ref(storage, i)
             let buffer = await getBytes(getRef)
 
-            i = buffer
+            i = Buffer.from(buffer)
 
         }
 
@@ -96,23 +105,24 @@ const updateStatus = async (status, id) => {
 }
 
 const addBid = async (product_id, customer_id, price) => {
-    let shipping_address =  await db.getShipingAddress(customer_id)
+    let shipping_address = await db.getShipingAddress(customer_id)
     await db.addBid(product_id, customer_id, shipping_address, price)
     return
 }
 
-const getWinner = async (product_id) => {
-    return await db.getWinner(product_id)
-}
 
 const updateBid = async (product_id, customer_id, price) => {
     let row = await db.udpateBid(product_id, customer_id, price)
     if (!row) {
         throw new Error("No row updated")
     }
+    return
 }
 
-const delproduct = async (product_id) => {
+const getWinner = async (product_id) => {
+    return await db.getWinner(product_id)
+}
+const delProduct = async (product_id) => {
     let { row, image } = await db.delproduct(product_id)
     for (let i of image) {
         const desertRef = ref(storage, i);
@@ -136,6 +146,6 @@ const addCategory = async (cate) => {
 export default {
     addProduct, getAllProduct, getProduct,
     updateStatus, addBid, getWinner,
-    updateBid, delproduct, getCategory,
+    updateBid, delProduct, getCategory,
     addCategory
 }

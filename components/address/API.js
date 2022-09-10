@@ -8,6 +8,7 @@ const router = express.Router()
 router.delete('/', cors({origin:'*'}),middleware.checkAuth, ctrler.deleteAddress)
 router.post('/', cors({origin:'*'}),middleware.checkAuth, ctrler.addAddress)
 router.put('/', cors({origin:'*'}),middleware.checkAuth, ctrler.updateAddress)
+router.get('/', cors({origin:'*'}),middleware.checkAuth, ctrler.getAddress)
 
 
 

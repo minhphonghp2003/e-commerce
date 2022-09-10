@@ -14,11 +14,10 @@ const register = async (userInfo) => {
 
 const login = async (userInfo) => {
     let { username, password } = userInfo
-    let isValid = await db.checkAvailableUser(username, password)
+    let {isValid,id,role} = await db.getAvailableUserCred(username, password)
     if (isValid) {
-        let userData = await db.getUserBy(0, username)
-        let token = await keygen(userData.id, userData.role)
-        return { token, id: userData.id }
+        let token = await keygen(id, role)
+        return { token, id }
     }
     return { error: "Wrong password" }
 
@@ -38,8 +37,8 @@ const updatePassword = async (userInfo) => {
 
 }
 
-const getUser = async (username) => {
-    let userData = await db.getUserBy(0, username)
+const getUser = async (id) => {
+    let userData = await db.getUserBy(id)
     return userData
 }
 

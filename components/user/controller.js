@@ -13,9 +13,9 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
     try {
-        let response = await svc.login(req.body)
+        let user = await svc.login(req.body)
 
-        return res.status(400).json(response)
+        return res.status(200).json(user)
 
     } catch (error) {
         next(error)
@@ -24,7 +24,9 @@ const login = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
     try {
-        await svc.updateUser(req.body)
+        let userInfo = req.body
+        userInfo.id = req.data.id
+        await svc.updateUser(userInfo)
 
         return res.status(200).send("DONE")
     } catch (error) {
@@ -45,7 +47,7 @@ const updatePassword = async (req, res, next) => {
 const getUser = async (req, res, next) => {
     try {
 
-        let userData = await svc.getUser(req.query.username)
+        let userData = await svc.getUser(req.query.id)
         return res.status(200).json(userData)
     } catch (error) {
         next(error)
