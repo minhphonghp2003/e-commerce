@@ -5,7 +5,7 @@ const addComment = async (req, res, next) => {
     try {
         let comment = req.body
         comment.customer_id = req.data.id
-        let id = await svc.addComment(comment, req.files)
+        let id = await svc.addComment(comment)
 
         return res.status(200).json({ id })
 
@@ -31,7 +31,7 @@ const updateComment = async (req, res, next) => {
         let comment = req.body 
         if(req.data.id == comment.customer_id){
 
-            await svc.updateComment(comment,req.files)
+            await svc.updateComment(comment)
             return res.send("DONE")
         }
         return res.status(400).send("You're not allowed")

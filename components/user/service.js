@@ -40,7 +40,6 @@ const updatePassword = async (userInfo) => {
 
 const getUser = async (username) => {
     let userData = await db.getUserBy(0, username)
-    console.log(userData);
     return userData
 }
 

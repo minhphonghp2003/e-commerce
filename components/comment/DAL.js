@@ -12,7 +12,7 @@ const pool = new Pool({
 })
 
 
-const addComment = async (comment, images) => {
+const addComment = async (comment) => {
   let id = uuidv4()
   let today = new Date();
   let dd = String(today.getDate()).padStart(2, '0');
@@ -20,35 +20,31 @@ const addComment = async (comment, images) => {
   let yyyy = today.getFullYear();
   today = mm + '/' + dd + '/' + yyyy;
   await pool.query("insert into public.comment values($1, $2, $3,$4,$5,$6)", [today, id, ...Object.values(comment)])
-  await pool.query("insert into public.comment_image values($1, $2)", [id, images])
   return id
 }
 
 
 const delComment = async (id) => {
-  let images = await pool.query("select image from public.comment_image where comment_id = $1", [id])
 
   let row = await pool.query("delete from public.comment where id = $1", [id])
   if (!row.rowCount) {
     throw new Error("No row deleted")
 
   }
-  return images.rows[0].image
+  return 
 }
 
-const updateComment = async (comment, images) => {
-  let old_images = await pool.query("select image from public.comment_image where comment_id = $1",[comment.id])
+const updateComment = async (comment) => {
   let row = await pool.query("update public.comment set content = $1, rate  = $2 where product_id = $3 and customer_id = $4", [comment.content, comment.rate,comment.product_id, comment.customer_id])
-  await pool.query('update public.comment_image set image = $1 where comment_id = $2', [images,comment.id])
   if (!row.rowCount) {
     throw new Error("No row deleted")
 
   }
-  return old_images.rows[0].image
+  return 
 }
 
 const getComment = async (product_id)=>{
-  let comments = (await pool.query("select * from public.comment as c join comment_image ci on c.id = ci.comment_id where product_id = $1",[product_id])).rows
+  let comments = (await pool.query("select date,content,rate, u.fullname from public.comment as c join public.user u on c.customer_id = u.id where product_id = $1",[product_id])).rows
   return comments
 }
 

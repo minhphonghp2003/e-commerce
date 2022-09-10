@@ -21,6 +21,7 @@ const getAllUser = async ()=>{
 
 const getUserBy = async (id, username) => {
   let res
+  //  get product
   if (id) {
     res = await pool.query("select * from public.user where id = $1", [id]);
 
