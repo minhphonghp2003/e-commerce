@@ -52,8 +52,7 @@ const getAllProduct = async (cate, status, page) => {
 
 
     })()
-    //  p1: 0-15, p2:16-31... max(p-1)
-    //  fid = max(p-1) lid = fid + max - 1
+    
     let firstPageElement = PAGINATE * (page - 1)
     let lastPageElement = firstPageElement + PAGINATE
     if (lastPageElement > products.length) {
