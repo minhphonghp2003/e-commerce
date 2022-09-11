@@ -14,7 +14,7 @@ const register = async (userInfo) => {
 
 const login = async (userInfo) => {
     let { username, password } = userInfo
-    let {isValid,id,role} = await db.getAvailableUserCred(username, password)
+    let { isValid, id, role } = await db.getAvailableUserCred(username, password)
     if (isValid) {
         let token = await keygen(id, role)
         return { token, id }
@@ -30,8 +30,8 @@ const updateUser = async (userInfo) => {
 }
 
 const updatePassword = async (userInfo) => {
-    let { username, password } = userInfo
-    await db.updatePassword(username, password)
+    let {id, password } = userInfo
+    await db.updatePassword(id, password)
     return
 
 
@@ -42,7 +42,7 @@ const getUser = async (id) => {
     return userData
 }
 
-const getAllUser = async ()=>{
+const getAllUser = async () => {
     return await db.getAllUser()
 }
 

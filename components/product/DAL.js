@@ -11,10 +11,7 @@ const pool = new Pool({
   port: process.env.PGPORT,
 })
 
-const getShipingAddress = async (customer_id)=>{
-  console.log(customer_id);
-  return (await pool.query("select default_shipping_address from public.user  where id = $1", [customer_id])).rows[0].default_shipping_address
-}
+
 
 const addProduct = async (product, images) => {
   const pid = uuidv4()
@@ -54,8 +51,7 @@ const updateStatus = async (status, id) => {
   return row
 }
 
-const addBid = async (product_id, customer_id, shipping_address, price) => {
-  let sku = Date.now()
+const addBid = async (product_id, customer_id,  price) => {
   let today = new Date();
   let dd = String(today.getDate()).padStart(2, '0');
   let mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -63,22 +59,20 @@ const addBid = async (product_id, customer_id, shipping_address, price) => {
   today = mm + '/' + dd + '/' + yyyy;
 
   await pool.query("insert into public.bidder values($1,$2,$3) ", [customer_id, product_id, price])
-  await pool.query("insert into public.order values($1,$2,$3,$4,$5) ", [sku, product_id, today, customer_id, shipping_address])
   await pool.query("update public.product set price = $1 where id = $2", [price, product_id])
   return
 }
 
 const udpateBid = async (product_id, customer_id, price) => {
  
-  let row1 = (await pool.query("update public.product set price = $1 where id = $2"), [price, product_id]).rowCount
-  let row2 = (await pool.query("update public.bidder set price = $1 where customer_id = $2 and product_id = $3"), [price, customer_id, product_id]).rowCount
+  let row1 = (await pool.query("update public.product set price = $1 where id = $2", [price, product_id])).rowCount
+  let row2 = (await pool.query("update public.bidder set price = $1 where bidder = $2 and product = $3", [price, customer_id, product_id])).rowCount
   return row1 && row2
 }
 
 
 const getWinner = async (product_id) => {
-  let data = await pool.query("select fullname,b.bidder as bidder,b.price,p.name,description,sku from public.product p join public.bidder b on p.id = b.product join public.user u on b.bidder = u.id where p.id = $1 order by price desc", [product_id])
-  await pool.query("update public.order set status = 'sold' where product_id = $1 and customer_id = $2",[product_id,data.rows[0].bidder])
+  let data = await pool.query("select p.id as product_id, p.name as product_name,fullname,b.bidder as bidder,b.price,description,sku from public.product p join public.bidder b on p.id = b.product join public.user u on b.bidder = u.id where p.id = $1 order by price desc", [product_id])
   return data.rows[0]
 
 }
@@ -86,7 +80,7 @@ const getWinner = async (product_id) => {
 
 
 const delproduct = async (id) => {
-  let image = (await pool.query("select image from product_image where product_id = $1",[product_id])).rows[0].image
+  let image = (await pool.query("select image from product_image where product_id = $1",[id])).rows[0].image
   let row = (await pool.query("delete from public.product where id = $1", [id])).rowCount
   return {image,row}
 }
@@ -112,5 +106,5 @@ export default {
   addProduct, delproduct,
   getCategory, getAllProduct, getProduct,
   addCategory, updateStatus, addBid, udpateBid,
-  getWinner, getShipingAddress
+  getWinner 
 }

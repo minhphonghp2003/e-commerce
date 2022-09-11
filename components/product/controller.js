@@ -78,6 +78,7 @@ const updateBid = async (req, res, next) => {
 const getWinner = async (req, res, next) => {
     try {
         let product_id = req.query.id
+        
         let winner = await svc.getWinner(product_id)
         return res.status(200).json(winner)
     } catch (error) {
@@ -85,10 +86,14 @@ const getWinner = async (req, res, next) => {
         next(error)
     }
 }
-// 
+
 const delProduct = async (req, res, next) => {
     try {
         let product_id = req.body.id
+        let seller = (await svc.getProduct(product_id)).prod.seller
+        if(seller != req.data.id){
+            throw new Error("You are not the seller")
+        }
         await svc.delProduct(product_id)
         return res.status(200).send("DONE")
     } catch (error) {

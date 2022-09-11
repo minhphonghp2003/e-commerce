@@ -43,7 +43,17 @@ const getAllProduct = async (cate, status, page) => {
         }
     }
 
-    await (async () => {
+   
+
+    let firstPageElement = PAGINATE * (page - 1)
+    let lastPageElement = firstPageElement + PAGINATE
+    if (lastPageElement > products.length) {
+        lastPageElement = products.length
+    }
+    products = products.slice(firstPageElement, lastPageElement)
+
+
+     await (async () => {
 
         for (const p of products) {
             let img = p.image
@@ -61,13 +71,6 @@ const getAllProduct = async (cate, status, page) => {
 
     })()
 
-    let firstPageElement = PAGINATE * (page - 1)
-    let lastPageElement = firstPageElement + PAGINATE
-    if (lastPageElement > products.length) {
-        lastPageElement = products.length
-    }
-    products = products.slice(firstPageElement, lastPageElement)
-
 
     return products
 }
@@ -80,12 +83,12 @@ const getProduct = async (id) => {
 
     await (async () => {
 
-        for (let i of product.prod.image) {
+        for (let i in product.prod.image) {
 
-            let getRef = ref(storage, i)
+            let getRef = ref(storage, product.prod.image[i])
             let buffer = await getBytes(getRef)
 
-            i = Buffer.from(buffer)
+            product.prod.image[i] = Buffer.from(buffer)
 
         }
 
@@ -105,8 +108,7 @@ const updateStatus = async (status, id) => {
 }
 
 const addBid = async (product_id, customer_id, price) => {
-    let shipping_address = await db.getShipingAddress(customer_id)
-    await db.addBid(product_id, customer_id, shipping_address, price)
+    await db.addBid(product_id, customer_id, price)
     return
 }
 

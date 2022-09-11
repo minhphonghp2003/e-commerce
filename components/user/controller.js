@@ -37,7 +37,9 @@ const updateUser = async (req, res, next) => {
 const updatePassword = async (req, res, next) => {
     try {
 
-        await svc.updatePassword(req.body)
+        let id = req.data.id
+        let cre = {id,password : req.body.password}
+        await svc.updatePassword(cre)
         return res.status(200).send("DONE")
     } catch (error) {
         next(error)
@@ -54,13 +56,13 @@ const getUser = async (req, res, next) => {
     }
 }
 
-const getAllUser = async (req,res,next)=>{
+const getAllUser = async (req, res, next) => {
     try {
-       if(req.data.role != 'admin') {
-        return res.status(400).send("You are not allowed")
-       }
-       let users = await svc.getAllUser()
-       return res.status(200).json(users)
+        if (req.data.role != 'admin') {
+            return res.status(400).send("You are not allowed")
+        }
+        let users = await svc.getAllUser()
+        return res.status(200).json(users)
     } catch (error) {
         next(error)
     }

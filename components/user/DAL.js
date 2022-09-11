@@ -23,10 +23,8 @@ const getUserBy = async (id) => {
 
 
  let  product = await pool.query("select sku, name, date_end, status, image[0] as image from public.product  p inner join public.product_image as i on p.id  = i.product_id where p.seller = $1", [id])
- let  user = await pool.query("select * from public.user where id = $1", [id]);
+ let  user = await pool.query("select fullname,email,country,phone,role from public.user where id = $1", [id]);
 
-  let default_shipping = await pool.query("select * from public.address where id = $1", [user.rows[0].default_shipping_address])
-  user.rows[0].default_shipping_address = default_shipping.rows[0]
   return {user: user.rows[0], product : product.rows}
 
 }
@@ -52,16 +50,15 @@ const getAvailableUserCred= async (username, password) => {
 }
 
 const updateUser = async (data) => {
-  console.log(data);
   await pool.query("UPDATE public.user SET  fullname = $1,phone= $2, email =$3 ,country = $4,default_shipping_address=$5, role = $6 WHERE id = $7;", Object.values(data))
   return
 
 }
 
-const updatePassword = async (username, password) => {
+const updatePassword = async (id, password) => {
 
   const hash = await bcrypt.hash(password, saltRounds)
-  let row = await pool.query("UPDATE public.user SET  password = $1 WHERE username = $2;", [hash, username])
+  let row = await pool.query("UPDATE public.user SET  password = $1 WHERE id = $2;", [hash,id])
   if (!row.rowCount) {
     throw new Error("No username found")
   }
