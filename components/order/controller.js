@@ -29,7 +29,7 @@ const updateStatus = async(req,res,next) =>{
        await svc.updateStatus(status,product_id)
        return res.send("DONE")
     } catch (error) {
-       next(error) 
+       next(error)
     }
 }
 

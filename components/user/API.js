@@ -11,6 +11,7 @@ router.post('/login', cors({origin:'*'}), ctrler.login)
 router.put('/password', cors({origin:'*'}), middleware.checkAuth,ctrler.updatePassword)
 router.put('/update', cors({origin:'*'}),middleware.checkAuth, ctrler.updateUser)
 router.get('/alluser', cors({origin:'*'}),middleware.checkAuth, ctrler.getAllUser)
+router.get('/mydata', cors({origin:'*'}),middleware.checkAuth, ctrler.getMyData)
 router.get('/', cors({origin:'*'}), ctrler.getUser)
 
 

@@ -42,10 +42,15 @@ const getUser = async (id) => {
     return userData
 }
 
+const getMyData = async(id) =>{
+    return await db.getMyData(id)
+}
+
 const getAllUser = async () => {
     return await db.getAllUser()
 }
 
 
 
-export default { register, login, updateUser, updatePassword, getUser, getAllUser }
+
+export default { register, login, updateUser, updatePassword, getUser, getAllUser, getMyData }

@@ -56,6 +56,17 @@ const getUser = async (req, res, next) => {
     }
 }
 
+const getMyData = async(req,res,next) =>{
+    try {
+        let id = req.query.id
+        let mydata = await svc.getMyData(id)
+        return res.status(200).json(mydata)
+        
+    } catch (error) {
+       next(error) 
+    }
+}
+
 const getAllUser = async (req, res, next) => {
     try {
         if (req.data.role != 'admin') {
@@ -68,4 +79,5 @@ const getAllUser = async (req, res, next) => {
     }
 }
 
-export default { register, login, updateUser, updatePassword, getUser, getAllUser }
+
+export default { register, login, updateUser, updatePassword, getUser, getAllUser, getMyData }

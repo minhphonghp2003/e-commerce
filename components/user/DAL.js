@@ -15,19 +15,25 @@ const pool = new Pool({
   port: process.env.PGPORT,
 })
 
+
 const getAllUser = async () => {
   return (await pool.query("select * from public.user")).rows
 }
-
+// 
+const getMyData = async(id) =>{
+  let info = await pool.query("select u.*, p.sku,p.name as product_name,p.date_end ,p.status as product_status,image[1] as product_image from public.user u left join public.address a on u.default_shipping_address = a.id left join public.product p on p.seller = u.id left join public.product_image pi on p.id = pi.product_id where u.id = $1 ",[id])
+  return info.rows[0]
+}
 const getUserBy = async (id) => {
 
 
- let  product = await pool.query("select sku, name, date_end, status, image[0] as image from public.product  p inner join public.product_image as i on p.id  = i.product_id where p.seller = $1", [id])
+ let  product = await pool.query("select sku, name, date_end, status, image[1] as image from public.product  p inner join public.product_image as i on p.id  = i.product_id where p.seller = $1", [id])
  let  user = await pool.query("select fullname,email,country,phone,role from public.user where id = $1", [id]);
 
   return {user: user.rows[0], product : product.rows}
 
 }
+// 
 
 const addUser = async ({ username, password, fullname, phone, email }) => {
   try {
@@ -68,7 +74,4 @@ const updatePassword = async (id, password) => {
 
 }
 
-
-
-
-export default { updateUser, getUserBy, addUser, getAvailableUserCred, updatePassword, getAllUser };
+export default { updateUser, getUserBy, addUser, getAvailableUserCred, updatePassword, getAllUser, getMyData };
