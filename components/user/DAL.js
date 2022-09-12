@@ -19,7 +19,7 @@ const pool = new Pool({
 const getAllUser = async () => {
   return (await pool.query("select * from public.user")).rows
 }
-// 
+
 const getMyData = async(id) =>{
   let info = await pool.query("select u.*, p.sku,p.name as product_name,p.date_end ,p.status as product_status,image[1] as product_image from public.user u left join public.address a on u.default_shipping_address = a.id left join public.product p on p.seller = u.id left join public.product_image pi on p.id = pi.product_id where u.id = $1 ",[id])
   return info.rows[0]
@@ -33,7 +33,7 @@ const getUserBy = async (id) => {
   return {user: user.rows[0], product : product.rows}
 
 }
-// 
+
 
 const addUser = async ({ username, password, fullname, phone, email }) => {
   try {

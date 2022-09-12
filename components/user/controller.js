@@ -58,7 +58,7 @@ const getUser = async (req, res, next) => {
 
 const getMyData = async(req,res,next) =>{
     try {
-        let id = req.query.id
+        let id =req.data.id 
         let mydata = await svc.getMyData(id)
         return res.status(200).json(mydata)
         
