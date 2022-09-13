@@ -45,12 +45,12 @@ const getAllProduct = async (cate, status, page) => {
 
    
 
-    let firstPageElement = PAGINATE * (page - 1)
-    let lastPageElement = firstPageElement + PAGINATE
-    if (lastPageElement > products.length) {
-        lastPageElement = products.length
+    let first_PageElement = PAGINATE * (page - 1)
+    let last_PageElement = first_PageElement + PAGINATE
+    if (last_PageElement > products.length) {
+        last_PageElement = products.length
     }
-    products = products.slice(firstPageElement, lastPageElement)
+    products = products.slice(first_PageElement, last_PageElement)
 
 
      await (async () => {
