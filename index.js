@@ -3,6 +3,7 @@ import 'dotenv/config'
 import user from './components/user/API.js'
 import address from './components/address/API.js'
 import comment from './components/comment/API.js'
+import order from './components/order/API.js'
 import product from './components/product/API.js'
 import morgan from 'morgan'
 
@@ -18,6 +19,7 @@ app.use('/user', user.router)
 app.use('/address', address.router)
 app.use('/comment', comment.router)
 app.use('/product', product.router)
+app.use('/order', order.router)
 
 
 
