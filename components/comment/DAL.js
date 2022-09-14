@@ -44,7 +44,7 @@ const updateComment = async (comment) => {
 }
 
 const getComment = async (product_id)=>{
-  let comments = (await pool.query("select date,content,rate, u.fullname from public.comment as c join public.user u on c.customer_id = u.id where product_id = $1",[product_id])).rows
+  let comments = (await pool.query("select id,date,content,rate, u.fullname, u.id as uid from public.comment as c join public.user u on c.customer_id = u.id where product_id = $2",[product_id])).rows
   return comments
 }
 

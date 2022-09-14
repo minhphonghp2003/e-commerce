@@ -16,8 +16,11 @@ const addComment = async (req, res, next) => {
 
 const delComment = async (req, res, next) => {
     try {
-        
-        let comment_id = req.body.id
+        if (req.body.uid != req.data.id) {
+            throw new Error("You are not allowed")
+        }
+        let comment_id = req.body.comment_id
+
         await svc.delComment(comment_id)
         return res.send("Done")
 
@@ -28,13 +31,13 @@ const delComment = async (req, res, next) => {
 
 const updateComment = async (req, res, next) => {
     try {
-        let comment = req.body 
-        if(req.data.id == comment.customer_id){
-
-            await svc.updateComment(comment)
-            return res.send("DONE")
+        if (req.body.uid != req.data.id) {
+            throw new Error("You are not allowed")
         }
-        return res.status(400).send("You're not allowed")
+        let comment = req.body
+
+        await svc.updateComment(comment)
+        return res.send("DONE")
     } catch (error) {
         next(error)
     }
