@@ -35,7 +35,7 @@ const delComment = async (id) => {
 }
 
 const updateComment = async (comment) => {
-  let row = await pool.query("update public.comment set content = $1, rate  = $2 where product_id = $3 and customer_id = $4", [comment.content, comment.rate,comment.product_id, comment.customer_id])
+  let row = await pool.query("update public.comment set content = $1, rate  = $2 where id = $3 ", [comment.content, comment.rate,comment.comment_id])
   if (!row.rowCount) {
     throw new Error("No row deleted")
 

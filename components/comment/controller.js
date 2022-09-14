@@ -16,7 +16,7 @@ const addComment = async (req, res, next) => {
 
 const delComment = async (req, res, next) => {
     try {
-        if (req.body.uid != req.data.id) {
+        if (req.body.uid !== req.data.id) {
             throw new Error("You are not allowed")
         }
         let comment_id = req.body.comment_id
@@ -31,7 +31,7 @@ const delComment = async (req, res, next) => {
 
 const updateComment = async (req, res, next) => {
     try {
-        if (req.body.uid != req.data.id) {
+        if (req.body.uid !== req.data.id) {
             throw new Error("You are not allowed")
         }
         let comment = req.body
