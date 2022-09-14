@@ -5,7 +5,6 @@ import address from './components/address/API.js'
 import comment from './components/comment/API.js'
 import order from './components/order/API.js'
 import product from './components/product/API.js'
-import order from './components/order/API.js'
 import morgan from 'morgan'
 
 
