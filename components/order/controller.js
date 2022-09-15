@@ -25,6 +25,9 @@ const getOrder = async(req,res,next) =>{
 
 const updateStatus = async(req,res,next) =>{
     try {
+    if(req.data.role != "shipper"){
+            throw new Error("You are not shipper")
+        }
        let {status,product_id} = req.body 
        await svc.updateStatus(status,product_id)
        return res.send("DONE")
