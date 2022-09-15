@@ -44,7 +44,7 @@ const updateStatus = async( status,id)=>{
 }
 
 const getAllOrder = async() =>{
-  return (await pool.query("select p.name,p.price,u.fullname,u.email,u.phone,a.* from public.order o join public.product p on o.product_id = p.id join public.address a on o.shipping_address = a.id join public.user u on u.id = o.customer_id ")).rows
+  return (await pool.query("select p.id as product_id,p.name as product_name,p.price,u.fullname,u.email,u.phone,a.* from public.order o join public.product p on o.product_id = p.id join public.address a on o.shipping_address = a.id join public.user u on u.id = o.customer_id ")).rows
 }
 
 export default { getOrder, addOrder, getShippingAddress, updateStatus,getAllOrder };
