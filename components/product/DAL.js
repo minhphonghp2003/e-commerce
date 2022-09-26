@@ -85,6 +85,11 @@ const delproduct = async (id) => {
   return {image,row}
 }
 
+const getMostWatched = async (id) =>{
+
+    let data = await pool.query("select p.id, sku, name, date_end, status, image[1] as image, b.bidder from public.product  p inner join public.product_image as i on p.id  = i.product_id  join public.bidder b on p.id = b.product ")
+}
+
 
 
 // -------------category-----------------------
