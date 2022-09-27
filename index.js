@@ -14,7 +14,10 @@ const port = process.env.PORT || 3000
 app.use(morgan("combined"))
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
-
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  next();
+});
 app.use('/user', user.router)
 app.use('/address', address.router)
 app.use('/comment', comment.router)
