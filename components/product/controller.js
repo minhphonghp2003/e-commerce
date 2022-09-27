@@ -18,8 +18,8 @@ const addProduct = async (req, res, next) => {
 
 const getAllProduct = async (req, res, next) => {
     try {
-        let { cate, status, page } = req.query
-        let products = await svc.getAllProduct(cate, status, page)
+        let {  page } = req.query
+        let products = await svc.getAllProduct( page)
         return res.status(200).json(products)
     } catch (error) {
         next(error)
