@@ -16,6 +16,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers")
+  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT")
   next();
 });
 app.use('/user', user.router)
