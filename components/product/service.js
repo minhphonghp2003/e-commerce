@@ -3,7 +3,7 @@ import firebase from '../../libraries/config.js'
 import { getStorage, ref, uploadBytes, getBytes, deleteObject } from "firebase/storage";
 
 const storage = getStorage(firebase.firebase_app)
-const PAGINATE = 16
+const PAGINATE = 3
 
 const addProduct = async (product, files) => {
     let images = []
@@ -21,37 +21,28 @@ const addProduct = async (product, files) => {
     return pid
 }
 
-const getAllProduct = async (cate, status, page) => {
+const getAllProduct = async (page) => {
 
     let product = await db.getAllProduct()
-    if (status) {
-        for (let i = 0; i < product.data.length; i++) {
-            if (product.data[i].status != status) {
-   
-                product.data.splice(i,1)
+    product.data.forEach(p => {
+       for (const i of product.bidder_count) {
+        if(i.product == p.id){
+            p.b_count = i.count
+        } 
+       } 
+    });
 
-                i--
-            }
+    if(page){
+        
+        let first_PageElement = PAGINATE * (page - 1)
+        let last_PageElement = first_PageElement + PAGINATE
+        if (last_PageElement > product.data.length) {
+            last_PageElement = product.data.length
         }
-    }
-    if (cate) {
-        for (let i = 0; i < product.data.length; i++) {
-            if (product.data[i].category != cate) {
-                product.data.splice(i,1)
-                i--
-            }
-        }
-    }
+        product.data = product.data.slice(first_PageElement, last_PageElement)
+     
 
-   
-
-    let first_PageElement = PAGINATE * (page - 1)
-    let last_PageElement = first_PageElement + PAGINATE
-    if (last_PageElement > product.data.length) {
-        last_PageElement = product.data.length
-    }
-    product.data = product.data.slice(first_PageElement, last_PageElement)
-
+    }        
 
      await (async () => {
 
@@ -72,7 +63,7 @@ const getAllProduct = async (cate, status, page) => {
     })()
 
 
-    return product
+    return product.data
 }
 
 const getProduct = async (id) => {

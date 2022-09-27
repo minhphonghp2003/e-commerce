@@ -33,7 +33,7 @@ const getAllProduct = async () => {
   let data = await pool.query("select p.id, sku, name,c.cate as category, date_end, status, image[1] as image from public.product  p inner join public.product_image as i on p.id  = i.product_id  join public.category c on p.category = c.id")
   let bidder = await pool.query("select count(bidder.bidder), product from bidder group by product order by count desc")
   
-  return {data:data.rows, bidder_count:bidder}
+  return {data:data.rows, bidder_count:bidder.rows}
 
 }
 
