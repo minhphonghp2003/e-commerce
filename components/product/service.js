@@ -23,7 +23,7 @@ const addProduct = async (product, files) => {
 
 const getAllProduct = async (cate, status, page) => {
 
-    let products = await db.getAllProduct()
+    let product = await db.getAllProduct()
     if (status) {
         for (let i = 0; i < product.data.length; i++) {
             if (product.data[i].status != status) {
@@ -72,7 +72,7 @@ const getAllProduct = async (cate, status, page) => {
     })()
 
 
-    return products
+    return product
 }
 
 const getProduct = async (id) => {
