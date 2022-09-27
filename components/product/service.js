@@ -25,19 +25,19 @@ const getAllProduct = async (cate, status, page) => {
 
     let products = await db.getAllProduct()
     if (status) {
-        for (let i = 0; i < products.length; i++) {
-            if (products[i].status != status) {
+        for (let i = 0; i < product.data.length; i++) {
+            if (product.data[i].status != status) {
    
-                products.splice(i,1)
+                product.data.splice(i,1)
 
                 i--
             }
         }
     }
     if (cate) {
-        for (let i = 0; i < products.length; i++) {
-            if (products[i].category != cate) {
-                products.splice(i,1)
+        for (let i = 0; i < product.data.length; i++) {
+            if (product.data[i].category != cate) {
+                product.data.splice(i,1)
                 i--
             }
         }
@@ -47,15 +47,15 @@ const getAllProduct = async (cate, status, page) => {
 
     let first_PageElement = PAGINATE * (page - 1)
     let last_PageElement = first_PageElement + PAGINATE
-    if (last_PageElement > products.length) {
-        last_PageElement = products.length
+    if (last_PageElement > product.data.length) {
+        last_PageElement = product.data.length
     }
-    products = products.slice(first_PageElement, last_PageElement)
+    product.data = product.data.slice(first_PageElement, last_PageElement)
 
 
      await (async () => {
 
-        for (const p of products) {
+        for (const p of product.data) {
             let img = p.image
 
             if (img) {

@@ -30,20 +30,20 @@ const addProduct = async (product, images) => {
 
 
 const getAllProduct = async () => {
-  let data
- 
-    data = await pool.query("select p.id, sku, name,c.cate as category, date_end, status, image[1] as image from public.product  p inner join public.product_image as i on p.id  = i.product_id  join public.category c on p.category = c.id")
-  return data.rows
+  let data = await pool.query("select p.id, sku, name,c.cate as category, date_end, status, image[1] as image from public.product  p inner join public.product_image as i on p.id  = i.product_id  join public.category c on p.category = c.id")
+  let bidder = await pool.query("select count(bidder.bidder), product from bidder group by product order by count desc")
+  
+  return {data:data.rows, bidder_count:bidder}
 
 }
 
 
 const getProduct = async (id) => {
   let product = await pool.query('select * from public.product p inner join public.category c on p.category = c.id left join public.product_image i on p.id = i.product_id where p.id = $1', [id])
-  let seller = await pool.query("select fullname from public.user where id = $1",[product.rows[0].seller])
-  let bidders = (await pool.query("select fullname,b.price  from public.bidder b join public.user u on b.bidder = u.id where b.product = $1 order by price desc",[id])).rows
-  
-  return { prod: product.rows[0], bidders, seller_name :seller.rows[0].fullname }
+  let seller = await pool.query("select fullname from public.user where id = $1", [product.rows[0].seller])
+  let bidders = (await pool.query("select fullname,b.price  from public.bidder b join public.user u on b.bidder = u.id where b.product = $1 order by price desc", [id])).rows
+
+  return { prod: product.rows[0], bidders, seller_name: seller.rows[0].fullname }
 }
 
 const updateStatus = async (status, id) => {
@@ -51,7 +51,7 @@ const updateStatus = async (status, id) => {
   return row
 }
 
-const addBid = async (product_id, customer_id,  price) => {
+const addBid = async (product_id, customer_id, price) => {
   let today = new Date();
   let dd = String(today.getDate()).padStart(2, '0');
   let mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -64,7 +64,7 @@ const addBid = async (product_id, customer_id,  price) => {
 }
 
 const udpateBid = async (product_id, customer_id, price) => {
- 
+
   let row1 = (await pool.query("update public.product set price = $1 where id = $2", [price, product_id])).rowCount
   let row2 = (await pool.query("update public.bidder set price = $1 where bidder = $2 and product = $3", [price, customer_id, product_id])).rowCount
   return row1 && row2
@@ -80,15 +80,12 @@ const getWinner = async (product_id) => {
 
 
 const delproduct = async (id) => {
-  let image = (await pool.query("select image from product_image where product_id = $1",[id])).rows[0].image
+  let image = (await pool.query("select image from product_image where product_id = $1", [id])).rows[0].image
   let row = (await pool.query("delete from public.product where id = $1", [id])).rowCount
-  return {image,row}
+  return { image, row }
 }
 
-const getMostWatched = async (id) =>{
 
-    let data = await pool.query("select p.id, sku, name, date_end, status, image[1] as image, b.bidder from public.product  p inner join public.product_image as i on p.id  = i.product_id  join public.bidder b on p.id = b.product ")
-}
 
 
 
@@ -111,5 +108,5 @@ export default {
   addProduct, delproduct,
   getCategory, getAllProduct, getProduct,
   addCategory, updateStatus, addBid, udpateBid,
-  getWinner 
+  getWinner
 }
