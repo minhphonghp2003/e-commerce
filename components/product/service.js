@@ -58,8 +58,6 @@ const getAllProduct = async (page) => {
             }
 
         }
-
-
     })()
 
 
