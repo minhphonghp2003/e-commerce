@@ -91,5 +91,31 @@ const getAllUser = async (req, res, next) => {
     }
 }
 
+const addResetEmail = async(req,res,next) =>{
+    try {
+        let e_id =await svc.addResetEmail(req.body.email) 
+        return  res.status(200).json(e_id) 
+    } catch (error) {
+       next(error) 
+    }
+}
 
-export default { register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword}
+const getResetEmail = async(req,res,next) =>{
+    try {
+        let email =await svc.getEmail(req.query.id) 
+        return  res.status(200).json(email) 
+    } catch (error) {
+       next(error) 
+    }
+}
+
+const deleteResetEmail = async(req,res,next) =>{
+    try {
+       await svc.deleteResetEmail(req.query.id) 
+       return res.status(200).send("done")
+    } catch (error) {
+       next(error) 
+    }
+}
+
+export default {addResetEmail,getResetEmail,deleteResetEmail, register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword}

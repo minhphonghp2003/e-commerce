@@ -94,7 +94,15 @@ const getAllUser = async () => {
     return await db.getAllUser()
 }
 
+const getEmail = async(id)=>{
+    return await db.getEmail(id)
+}
+const addResetEmail = async(email)=>{
+    return await db.addForgotPassEmail(email)
+}
+const deleteResetEmail = async(id)=>{
+    await db.deleteForgotPassEmail(id)
+    return
+}
 
-
-
-export default { register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword }
+export default {getEmail,addResetEmail,deleteResetEmail, register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword }

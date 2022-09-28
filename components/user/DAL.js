@@ -76,7 +76,7 @@ const updatePassword = async (id, password) => {
 
 }
 
-const newPassword = async(email,password) =>{
+const newPassword = async (email, password) => {
   const hash = await bcrypt.hash(password, saltRounds)
   let row = await pool.query("UPDATE public.user SET  password = $1 WHERE email = $2;", [hash, email])
   if (!row.rowCount) {
@@ -88,4 +88,32 @@ const newPassword = async(email,password) =>{
 
 }
 
-export default { updateUser, getUserBy, addUser, getAvailableUserCred, updatePassword, getAllUser, getMyData, newPassword };
+const getEmail = async (id) => {
+ 
+
+    let email = (await pool.query("select email from public.passwdforgot_email where id = $1", [id])).rows[0]
+    return email
+ 
+}
+
+const addForgotPassEmail = async (email) => {
+  
+    let checkEmail = (await pool.query("select email from public.user")).rows[0]
+    if (!checkEmail) {
+      throw new Error("No email valid")
+    }
+    let e_id = uuidv4()
+    await pool.query("insert into public.passwdforgot_email values($1,$2)",[email,e_id])
+    return e_id
+
+  
+}
+
+const deleteForgotPassEmail = async(id)=>{
+  
+    await pool.query("delete from public.passwdforgot_email where id = $1",[id])
+    return
+  
+}
+
+export default {getEmail,addForgotPassEmail,deleteForgotPassEmail, updateUser, getUserBy, addUser, getAvailableUserCred, updatePassword, getAllUser, getMyData, newPassword };
