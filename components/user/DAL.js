@@ -76,4 +76,16 @@ const updatePassword = async (id, password) => {
 
 }
 
-export default { updateUser, getUserBy, addUser, getAvailableUserCred, updatePassword, getAllUser, getMyData };
+const newPassword = async(email,password) =>{
+  const hash = await bcrypt.hash(password, saltRounds)
+  let row = await pool.query("UPDATE public.user SET  password = $1 WHERE email = $2;", [hash, email])
+  if (!row.rowCount) {
+    throw new Error("No username found")
+  }
+
+  return
+
+
+}
+
+export default { updateUser, getUserBy, addUser, getAvailableUserCred, updatePassword, getAllUser, getMyData, newPassword };

@@ -46,6 +46,18 @@ const updatePassword = async (req, res, next) => {
     }
 }
 
+const newPassword = async (req, res, next) => {
+    try {
+        
+        let cre = {email:req.body.email,password : req.body.password}
+        await svc.newPassword(cre)
+        return res.status(200).send("DONE")
+    } catch (error) {
+        next(error)
+    }
+}
+
+
 const getUser = async (req, res, next) => {
     try {
 
@@ -80,4 +92,4 @@ const getAllUser = async (req, res, next) => {
 }
 
 
-export default { register, login, updateUser, updatePassword, getUser, getAllUser, getMyData }
+export default { register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword}

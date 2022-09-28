@@ -36,8 +36,12 @@ const updatePassword = async (userInfo) => {
     let { id, password } = userInfo
     await db.updatePassword(id, password)
     return
+}
 
-
+const newPassword = async (userInfo) => {
+    let { email, password } = userInfo
+    await db.newPassword(email, password)
+    return
 }
 
 const getUser = async (id) => {
@@ -93,4 +97,4 @@ const getAllUser = async () => {
 
 
 
-export default { register, login, updateUser, updatePassword, getUser, getAllUser, getMyData }
+export default { register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword }
