@@ -30,7 +30,7 @@ const getUserBy = async (id) => {
 
 
   let product = await pool.query("select sku, name, date_end, status, image[1] as image from public.product  p inner join public.product_image as i on p.id  = i.product_id where p.seller = $1", [id])
-  let user = await pool.query("select fullname,email,country,phone,role from public.user where id = $1", [id]);
+  let user = await pool.query("select avatar,fullname,email,country,phone,role from public.user where id = $1", [id]);
 
   return { user: user.rows[0], product: product.rows }
 
@@ -57,8 +57,8 @@ const getAvailableUserCred = async (username, password) => {
 
 }
 
-const updateUser = async (data) => {
-  await pool.query("UPDATE public.user SET  fullname = $1,phone= $2, email =$3 ,country = $4,default_shipping_address=$5, role = $6 WHERE id = $7;", Object.values(data))
+const updateUser = async (data,image) => {
+  await pool.query("UPDATE public.user SET   fullname = $1,phone= $2, email =$3 ,country = $4,default_shipping_address=$5, role = $6,avatar = $8 WHERE id = $7;", [...Object.values(data),image])
   return
 
 }

@@ -26,7 +26,7 @@ const updateUser = async (req, res, next) => {
     try {
         let userInfo = req.body
         userInfo.id = req.data.id
-        await svc.updateUser(userInfo)
+        await svc.updateUser(userInfo,req.file)
 
         return res.status(200).send("DONE")
     } catch (error) {

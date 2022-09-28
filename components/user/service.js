@@ -27,8 +27,14 @@ const login = async (userInfo) => {
 
 }
 
-const updateUser = async (userInfo) => {
-    await db.updateUser(userInfo)
+const updateUser = async (userInfo, image) => {
+    let file_name = (Date.now() % 1000000000 - Math.round(Math.random() * 100000000)) + '-' + image.originalname
+    let dest_storage = image.fieldname + "/" + file_name
+    let storageRef = ref(storage, dest_storage)
+    let bytes = image.buffer
+    await uploadBytes(storageRef, bytes)
+    image = dest_storage
+    await db.updateUser(userInfo, image)
     return
 }
 
@@ -43,9 +49,10 @@ const newPassword = async (userInfo) => {
     await db.newPassword(email, password)
     return
 }
-
+// 
 const getUser = async (id) => {
     let userData = await db.getUserBy(id)
+    let userAvatar = userData.user.avatar
     await (async () => {
 
         for (const u of userData.product) {
@@ -60,15 +67,17 @@ const getUser = async (id) => {
             }
 
         }
-
+        let getRef = ref(storage,userAvatar)
+        let buffer = await getBytes(getRef)
+        userData.user.avatar = Buffer.from(buffer)
 
     })()
 
     return userData
 }
-
 const getMyData = async (id) => {
     let myData = await db.getMyData(id)
+    let myAvatar =  myData.user.avatar
     await (async () => {
 
         for (const u of myData.product) {
@@ -83,6 +92,12 @@ const getMyData = async (id) => {
             }
 
         }
+                let getRef = ref(storage, myAvatar)
+                let buffer = await getBytes(getRef)
+
+                myData.user.avatar = Buffer.from(buffer)
+
+
 
 
     })()
@@ -91,18 +106,35 @@ const getMyData = async (id) => {
 }
 
 const getAllUser = async () => {
-    return await db.getAllUser()
+    let userData = await db.getAllUser()
+ await (async () => {
+
+        for (const u of userData) {
+            let img = u.avatar
+
+            if (img) {
+                let getRef = ref(storage, img)
+                let buffer = await getBytes(getRef)
+
+                u.avatar = Buffer.from(buffer)
+
+            }
+
+        }
+
+    })()
+    return userData
 }
 
-const getEmail = async(id)=>{
+const getEmail = async (id) => {
     return await db.getEmail(id)
 }
-const addResetEmail = async(email)=>{
+const addResetEmail = async (email) => {
     return await db.addForgotPassEmail(email)
 }
-const deleteResetEmail = async(id)=>{
+const deleteResetEmail = async (id) => {
     await db.deleteForgotPassEmail(id)
     return
 }
 
-export default {getEmail,addResetEmail,deleteResetEmail, register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword }
+export default { getEmail, addResetEmail, deleteResetEmail, register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword }
