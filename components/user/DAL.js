@@ -41,6 +41,7 @@ const addUser = async ({ username, password, fullname, phone, email }) => {
   try {
     let id = uuidv4()
 
+
     const hash = await bcrypt.hash(password, saltRounds)
     await pool.query("insert into public.user(id,username,password,fullname,phone,email,role) values ($1,$2,$3,$4,$5,$6,$7)", [id, username, hash, fullname, phone, email, 'customer'])
     return id
