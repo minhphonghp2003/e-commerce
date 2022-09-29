@@ -28,6 +28,8 @@ const login = async (userInfo) => {
 }
 
 const updateUser = async (userInfo, image) => {
+    
+    let old_avatar = (await db.getMyData(userInfo.id)).user.avatar
     let file_name = (Date.now() % 1000000000 - Math.round(Math.random() * 100000000)) + '-' + image.originalname
     let dest_storage = image.fieldname + "/" + file_name
     let storageRef = ref(storage, dest_storage)
@@ -35,6 +37,10 @@ const updateUser = async (userInfo, image) => {
     await uploadBytes(storageRef, bytes)
     image = dest_storage
     await db.updateUser(userInfo, image)
+    if(old_avatar != 'user_images/avatar.jpg'){
+        const desertRef = ref(storage, old_avatar);
+        await deleteObject(desertRef)
+    }
     return
 }
 
@@ -67,7 +73,7 @@ const getUser = async (id) => {
             }
 
         }
-        let getRef = ref(storage,userAvatar)
+        let getRef = ref(storage, userAvatar)
         let buffer = await getBytes(getRef)
         userData.user.avatar = Buffer.from(buffer)
 
@@ -77,7 +83,7 @@ const getUser = async (id) => {
 }
 const getMyData = async (id) => {
     let myData = await db.getMyData(id)
-    let myAvatar =  myData.user.avatar
+    let myAvatar = myData.user.avatar
     await (async () => {
 
         for (const u of myData.product) {
@@ -92,10 +98,10 @@ const getMyData = async (id) => {
             }
 
         }
-                let getRef = ref(storage, myAvatar)
-                let buffer = await getBytes(getRef)
+        let getRef = ref(storage, myAvatar)
+        let buffer = await getBytes(getRef)
 
-                myData.user.avatar = Buffer.from(buffer)
+        myData.user.avatar = Buffer.from(buffer)
 
 
 
@@ -107,7 +113,7 @@ const getMyData = async (id) => {
 
 const getAllUser = async () => {
     let userData = await db.getAllUser()
- await (async () => {
+    await (async () => {
 
         for (const u of userData) {
             let img = u.avatar
