@@ -52,6 +52,7 @@ const getAllProduct = async (page) => {
             if (img) {
                 let getRef = ref(storage, img)
                 let buffer = await getBytes(getRef)
+
               
                 p.image = Buffer.from(buffer)
 
