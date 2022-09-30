@@ -43,7 +43,7 @@ const addUser = async ({ username, password, fullname, phone, email, shipping_ad
 
 
     const hash = await bcrypt.hash(password, saltRounds)
-    await pool.query("insert into public.user(id,username,password,fullname,phone,email,role,shipping_address) values ($1,$2,$3,$4,$5,$6,$7,$8)", [id, username, hash, fullname, phone, email, 'customer',shipping_address])
+    await pool.query("insert into public.user(id,username,password,fullname,phone,email,role,default_shipping_address) values ($1,$2,$3,$4,$5,$6,$7,$8)", [id, username, hash, fullname, phone, email, 'customer',shipping_address])
     return id
   } catch (error) {
     throw new Error(error)
