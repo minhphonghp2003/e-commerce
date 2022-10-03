@@ -6,15 +6,29 @@ import comment from './components/comment/API.js'
 import order from './components/order/API.js'
 import product from './components/product/API.js'
 import morgan from 'morgan'
-
+import { Server } from "socket.io";
+import { createServer } from "http";
 
 const app = express()
-const port = process.env.PORT || 3000
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin:process.env.corsorg 
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log(socket.id);
+  socket.on('newmsg',value=>{
+    io.emit('showmsg',value)
+  })
+});
+const port = process.env.PORT || 4000
 
 app.use(morgan("combined"))
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', process.env.corsorg)
   res.setHeader("Access-Control-Allow-Headers", "*")
   res.setHeader("Access-Control-Allow-Methods", "*")
@@ -36,4 +50,4 @@ app.use((req, res, next) => {
   res.status(404).send("404. Sorry can't find that! ")
 })
 
-app.listen(port)
+httpServer.listen(port)
