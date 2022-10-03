@@ -18,9 +18,11 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
   socket.on('newmsg',value=>{
     io.emit('showmsg',value)
+  })
+  socket.on('newbid',price=>{
+    io.emit('setnewprice',price)
   })
 });
 const port = process.env.PORT || 4000
