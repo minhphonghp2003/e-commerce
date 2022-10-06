@@ -29,7 +29,7 @@ const getMyData = async (id) => {
 const getUserBy = async (id) => {
 
 
-  let product = await pool.query("select sku, name, date_end, status, image[1] as image from public.product  p inner join public.product_image as i on p.id  = i.product_id where p.seller = $1", [id])
+  let product = await pool.query("select id,sku, name, date_end, status, image[1] as image from public.product  p inner join public.product_image as i on p.id  = i.product_id where p.seller = $1", [id])
   let user = await pool.query("select avatar,fullname,email,country,phone,role from public.user where id = $1", [id]);
 
   return { user: user.rows[0], product: product.rows }
