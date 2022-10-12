@@ -16,6 +16,7 @@ router.put('/status', cors({ origin: process.env.corsorg }), middleware.checkAut
 router.put('/bid', cors({ origin: process.env.corsorg }), middleware.checkAuth, ctrler.updateBid)
 router.get('/all', cors({ origin: process.env.corsorg }), ctrler.getAllProduct)
 router.get('/category', cors({ origin: process.env.corsorg }), ctrler.getCategory)
+router.get('/pagecount', cors({ origin: process.env.corsorg }), ctrler.countPage)
 router.get('/winner', cors({ origin: process.env.corsorg }), ctrler.getWinner)
 router.delete('/', cors({ origin: process.env.corsorg }),middleware.checkAuth, ctrler.delProduct)
 router.get('/:id', cors({ origin: process.env.corsorg }), ctrler.getProduct)

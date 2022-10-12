@@ -3,7 +3,7 @@ import firebase from '../../libraries/config.js'
 import { getStorage, ref, uploadBytes, getBytes, deleteObject } from "firebase/storage";
 
 const storage = getStorage(firebase.firebase_app)
-const PAGINATE = 10 
+const PAGINATE = 9 
 
 const addProduct = async (product, files) => {
     let images = []
@@ -135,9 +135,15 @@ const addCategory = async (cate) => {
     return
 }
 
+
+const countPage = async() =>{
+    return await db.countPage()
+}
+
+
 export default {
     addProduct, getAllProduct, getProduct,
     updateStatus, addBid, getWinner,
     updateBid, delProduct, getCategory,
-    addCategory
+    addCategory, countPage
 }

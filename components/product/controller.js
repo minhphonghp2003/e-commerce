@@ -18,8 +18,8 @@ const addProduct = async (req, res, next) => {
 
 const getAllProduct = async (req, res, next) => {
     try {
-        let {  page } = req.query
-        let products = await svc.getAllProduct( page)
+        let { page } = req.query
+        let products = await svc.getAllProduct(page)
         return res.status(200).json(products)
     } catch (error) {
         next(error)
@@ -78,7 +78,7 @@ const updateBid = async (req, res, next) => {
 const getWinner = async (req, res, next) => {
     try {
         let product_id = req.query.id
-        
+
         let winner = await svc.getWinner(product_id)
         return res.status(200).json(winner)
     } catch (error) {
@@ -91,11 +91,22 @@ const delProduct = async (req, res, next) => {
     try {
         let product_id = req.body.id
         let seller = (await svc.getProduct(product_id)).prod.seller
-        if(seller != req.data.id){
+        if (seller != req.data.id) {
             throw new Error("You are not the seller")
         }
         await svc.delProduct(product_id)
         return res.status(200).send("DONE")
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+
+const countPage = async (req, res, next) => {
+    try {
+        let page = await svc.countPage()
+        return res.status(200).json(page)
     } catch (error) {
         next(error)
     }
@@ -128,5 +139,5 @@ const addCategory = async (req, res, next) => {
 export default {
     addProduct, getAllProduct, getProduct,
     updateStatus, getCategory, addCategory, addBid,
-    updateBid, getWinner, delProduct
+    updateBid, getWinner, delProduct, countPage
 }

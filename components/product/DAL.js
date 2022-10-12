@@ -86,7 +86,10 @@ const delproduct = async (id) => {
 }
 
 
-
+const countPage = async()=>{
+  let page = (await pool.query("select count(sku) as count from public.product ")).rows[0].count
+  return page
+}
 
 
 // -------------category-----------------------
@@ -108,5 +111,5 @@ export default {
   addProduct, delproduct,
   getCategory, getAllProduct, getProduct,
   addCategory, updateStatus, addBid, udpateBid,
-  getWinner
+  getWinner,countPage
 }
