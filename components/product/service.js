@@ -137,7 +137,7 @@ const addCategory = async (cate) => {
 
 
 const countPage = async() =>{
-    return await db.countPage()
+    return (await db.countPage())/PAGINATE + 1
 }
 
 
