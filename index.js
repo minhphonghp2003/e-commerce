@@ -25,7 +25,7 @@ io.on("connection", (socket) => {
     io.emit('setnewprice',price)
   })
   socket.on('newcart',cart=>{
-    io.emit('newcart',cart)
+    io.emit('updatecart',cart)
   })
 });
 const port = process.env.PORT || 4000
