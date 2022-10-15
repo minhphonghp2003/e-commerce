@@ -49,4 +49,15 @@ const getAllOrder = async(req,res,next) =>{
     }
 }
 
-export default { addOrder,getOrder,updateStatus, getAllOrder }
+const getMyOrder = async (req, res, next) => {
+
+    try {
+        let { id } = req.data
+        let myOrder = await svc.getMyOrder(id)
+        return res.status(200).json(myOrder)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export default { addOrder,getOrder,updateStatus, getAllOrder , getMyOrder}

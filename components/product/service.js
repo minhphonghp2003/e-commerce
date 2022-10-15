@@ -3,7 +3,7 @@ import firebase from '../../libraries/config.js'
 import { getStorage, ref, uploadBytes, getBytes, deleteObject } from "firebase/storage";
 
 const storage = getStorage(firebase.firebase_app)
-const PAGINATE =  12
+const PAGINATE = 12
 
 const addProduct = async (product, files) => {
     let images = []
@@ -25,26 +25,26 @@ const getAllProduct = async (page) => {
 
     let product = await db.getAllProduct()
     product.data.forEach(p => {
-       for (const i of product.bidder_count) {
-        if(i.product == p.id){
-            p.b_count = i.count
-        } 
-       } 
+        for (const i of product.bidder_count) {
+            if (i.product == p.id) {
+                p.b_count = i.count
+            }
+        }
     });
 
-    if(page){
-        
+    if (page) {
+
         let first_PageElement = PAGINATE * (page - 1)
         let last_PageElement = first_PageElement + PAGINATE
         if (last_PageElement > product.data.length) {
             last_PageElement = product.data.length
         }
         product.data = product.data.slice(first_PageElement, last_PageElement)
-     
 
-    }        
 
-     await (async () => {
+    }
+
+    await (async () => {
 
         for (const p of product.data) {
             let img = p.image
@@ -53,7 +53,7 @@ const getAllProduct = async (page) => {
                 let getRef = ref(storage, img)
                 let buffer = await getBytes(getRef)
 
-              
+
                 p.image = Buffer.from(buffer)
 
             }
@@ -136,14 +136,33 @@ const addCategory = async (cate) => {
 }
 
 
-const countPage = async() =>{
-    return (await db.countPage())/PAGINATE + 1
+const countPage = async () => {
+    return (await db.countPage()) / PAGINATE + 1
 }
+
+const getMyBid = async (id) => {
+    let myBid = await db.getMyBid(id)
+    await (async () => {
+
+        for (let i of myBid) {
+
+            let getRef = ref(storage, i.p_image)
+            let buffer = await getBytes(getRef)
+
+           i.p_image = Buffer.from(buffer)
+
+        }
+
+
+    })()
+    return myBid
+}
+
 
 
 export default {
     addProduct, getAllProduct, getProduct,
     updateStatus, addBid, getWinner,
     updateBid, delProduct, getCategory,
-    addCategory, countPage
+    addCategory, countPage, getMyBid
 }

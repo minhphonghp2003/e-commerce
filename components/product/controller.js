@@ -135,9 +135,21 @@ const addCategory = async (req, res, next) => {
     }
 }
 
+const getMyBid = async (req, res, next) => {
+    try {
+        let { id } = req.data
+        let myBid = await svc.getMyBid(id)
+        return res.status(200).json(myBid)
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+
 
 export default {
     addProduct, getAllProduct, getProduct,
     updateStatus, getCategory, addCategory, addBid,
-    updateBid, getWinner, delProduct, countPage
+    updateBid, getWinner, delProduct, countPage, getMyBid
 }

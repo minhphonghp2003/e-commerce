@@ -107,9 +107,16 @@ const addCategory = async (cate) => {
 }
 
 
+const getMyBid = async(id)=>{
+  let myBid = (await pool.query("select product as product_id,image[1] as p_image, b.price, p.name as product_name from public.bidder b join public.user u on b.bidder =  u.id join public.product as p on p.id = b.product join public.product_image i on i.product_id = p.id where u.id = $1",[id])).rows
+  return myBid 
+}
+
+
+
 export default {
   addProduct, delproduct,
   getCategory, getAllProduct, getProduct,
   addCategory, updateStatus, addBid, udpateBid,
-  getWinner,countPage
+  getWinner,countPage,getMyBid
 }

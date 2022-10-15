@@ -8,6 +8,7 @@ const router = express.Router()
 
 router.get('/',cors({origin:process.env.corsorg}), middleware.checkAuth,ctrler.getOrder)
 router.get('/all',cors({origin:process.env.corsorg}), middleware.checkAuth,ctrler.getAllOrder)
+router.get('/myorder', cors({ origin: process.env.corsorg }), middleware.checkAuth,  ctrler.getMyOrder)
 router.post('/',cors({origin:process.env.corsorg}), middleware.checkAuth,ctrler.addOrder)
 router.put('/',cors({origin:process.env.corsorg}), middleware.checkAuth,ctrler.updateStatus)
 

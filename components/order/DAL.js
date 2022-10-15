@@ -47,4 +47,8 @@ const getAllOrder = async() =>{
   return (await pool.query("select p.id as product_id,p.name as product_name,p.price,u.fullname,u.email,u.phone,a.* from public.order o join public.product p on o.product_id = p.id join public.address a on o.shipping_address = a.id join public.user u on u.id = o.customer_id ")).rows
 }
 
-export default { getOrder, addOrder, getShippingAddress, updateStatus,getAllOrder };
+const getMyOrder = async(id)=>{
+  let myOrder = (await pool.query("select o.status, o.product_id,image[1] as p_image, p.price, p.name as product_name from public.order o join public.user u on u.id  = o.customer_id join public.product as p on p.id = o.product_id join public.product_image i on i.product_id = p.id  where o.customer_id = $1",[id])).rows
+  return myOrder 
+}
+export default { getOrder, addOrder, getShippingAddress, updateStatus,getAllOrder, getMyOrder };

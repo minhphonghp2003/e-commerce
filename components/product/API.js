@@ -11,6 +11,7 @@ const router = express.Router()
 
 router.post('/', cors({ origin: process.env.corsorg }), middleware.checkAuth, upload.array('product_images'), ctrler.addProduct)
 router.post('/category', cors({ origin: process.env.corsorg }), middleware.checkAuth,  ctrler.addCategory)
+router.get('/mybid', cors({ origin: process.env.corsorg }), middleware.checkAuth,  ctrler.getMyBid)
 router.post('/bid', cors({ origin: process.env.corsorg }), middleware.checkAuth,  ctrler.addBid)
 router.put('/status', cors({ origin: process.env.corsorg }), middleware.checkAuth, ctrler.updateStatus)
 router.put('/bid', cors({ origin: process.env.corsorg }), middleware.checkAuth, ctrler.updateBid)
