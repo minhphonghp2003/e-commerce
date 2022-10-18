@@ -2,7 +2,7 @@ import svc from './service.js'
 
 const addOrder = async(req,res,next) =>{
     try {
-        let uid = req.data.id
+        let uid = req.body.user_id
         let  product = req.body.product_id
         await svc.addOrder(uid,product)
         return res.status(200).send("DONE")
