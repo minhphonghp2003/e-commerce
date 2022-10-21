@@ -72,7 +72,7 @@ const udpateBid = async (product_id, customer_id, price) => {
 
 
 const getWinner = async (product_id) => {
-  let data = await pool.query("select p.id as product_id, p.name as product_name,fullname,b.bidder as bidder,b.price,description,sku from public.product p join public.bidder b on p.id = b.product join public.user u on b.bidder = u.id where p.id = $1 order by price desc", [product_id])
+  let data = await pool.query("select p.status, p.id as product_id, p.name as product_name,fullname,b.bidder as bidder,b.price,description,sku from public.product p join public.bidder b on p.id = b.product join public.user u on b.bidder = u.id where p.id = $1 order by price desc", [product_id])
   return data.rows[0]
 
 }
