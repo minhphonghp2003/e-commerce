@@ -1,22 +1,32 @@
 import svc from './service.js'
 import passport from 'passport'
 import GoogleStrategy from 'passport-google-oauth20'
+import FacebookStrategy from 'passport-facebook'
 import 'dotenv/config'
 
 let GGStr = GoogleStrategy.Strategy
 
 
-
 passport.use(new GGStr({
     clientID: process.env.clientID,
     clientSecret: process.env.clientSec,
-    callbackURL: "/user/callback"
+    callbackURL: "/user/google/callback"
 },
     function (accessToken, refreshToken, profile, cb) {
-        return cb(null, {profile})
+        return cb(null, profile)
 
     }
 ));
+passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_APP_ID,
+    clientSecret: process.env.FACEBOOK_APP_SECRET,
+    callbackURL: "/user/facebook/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    return cb(null,profile) 
+  }
+));
+
 passport.serializeUser(function (user, done) {
     done(null, user);
 });
@@ -30,7 +40,11 @@ passport.deserializeUser(function (user, done) {
 
 
 
-const oauth = async (req, res, next) => {
+const GGoauth = async (req, res, next) => {
+    return res.status(200).json(req.user)
+}
+
+const FBoauth = async (req, res, next) => {
     return res.status(200).json(req.user)
 }
 
@@ -151,4 +165,4 @@ const deleteResetEmail = async (req, res, next) => {
     }
 }
 
-export default { oauth, addResetEmail, getResetEmail, deleteResetEmail, register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword }
+export default {FBoauth, GGoauth, addResetEmail, getResetEmail, deleteResetEmail, register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword }
