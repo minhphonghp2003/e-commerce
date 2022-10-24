@@ -1,5 +1,38 @@
 import svc from './service.js'
+import passport from 'passport'
+import GoogleStrategy from 'passport-google-oauth20'
 
+let GGStr = GoogleStrategy.Strategy
+
+
+
+passport.use(new GGStr({
+    clientID: '87733065531-14hh3k9urhandt70085r9ievsetv2ole.apps.googleusercontent.com',
+    clientSecret: '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',
+    callbackURL: "/user/callback"
+},
+    function (accessToken, refreshToken, profile, cb) {
+
+        return cb(null, {profile,accessToken})
+
+    }
+));
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function (user, done) {
+    done(null, user);
+});
+
+
+
+
+
+
+const oauth = async (req, res, next) => {
+    return res.send(req.user)
+}
 
 const register = async (req, res, next) => {
     try {
@@ -26,7 +59,7 @@ const updateUser = async (req, res, next) => {
     try {
         let userInfo = req.body
         userInfo.id = req.data.id
-        await svc.updateUser(userInfo,req.file)
+        await svc.updateUser(userInfo, req.file)
 
         return res.status(200).send("DONE")
     } catch (error) {
@@ -38,7 +71,7 @@ const updatePassword = async (req, res, next) => {
     try {
 
         let id = req.data.id
-        let cre = {id,password : req.body.password}
+        let cre = { id, password: req.body.password }
         await svc.updatePassword(cre)
         return res.status(200).send("DONE")
     } catch (error) {
@@ -48,8 +81,8 @@ const updatePassword = async (req, res, next) => {
 
 const newPassword = async (req, res, next) => {
     try {
-        
-        let cre = {email:req.body.email,password : req.body.password}
+
+        let cre = { email: req.body.email, password: req.body.password }
         await svc.newPassword(cre)
         return res.status(200).send("DONE")
     } catch (error) {
@@ -68,14 +101,14 @@ const getUser = async (req, res, next) => {
     }
 }
 
-const getMyData = async(req,res,next) =>{
+const getMyData = async (req, res, next) => {
     try {
-        let id =req.data.id 
+        let id = req.data.id
         let mydata = await svc.getMyData(id)
         return res.status(200).json(mydata)
-        
+
     } catch (error) {
-       next(error) 
+        next(error)
     }
 }
 
@@ -91,31 +124,31 @@ const getAllUser = async (req, res, next) => {
     }
 }
 
-const addResetEmail = async(req,res,next) =>{
+const addResetEmail = async (req, res, next) => {
     try {
-        let e_id =await svc.addResetEmail(req.body.email) 
-        return  res.status(200).json(e_id) 
+        let e_id = await svc.addResetEmail(req.body.email)
+        return res.status(200).json(e_id)
     } catch (error) {
-       next(error) 
+        next(error)
     }
 }
 
-const getResetEmail = async(req,res,next) =>{
+const getResetEmail = async (req, res, next) => {
     try {
-        let email =await svc.getEmail(req.query.id) 
-        return  res.status(200).json(email) 
+        let email = await svc.getEmail(req.query.id)
+        return res.status(200).json(email)
     } catch (error) {
-       next(error) 
+        next(error)
     }
 }
 
-const deleteResetEmail = async(req,res,next) =>{
+const deleteResetEmail = async (req, res, next) => {
     try {
-       await svc.deleteResetEmail(req.query.id) 
-       return res.status(200).send("done")
+        await svc.deleteResetEmail(req.query.id)
+        return res.status(200).send("done")
     } catch (error) {
-       next(error) 
+        next(error)
     }
 }
 
-export default {addResetEmail,getResetEmail,deleteResetEmail, register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword}
+export default { oauth, addResetEmail, getResetEmail, deleteResetEmail, register, login, updateUser, updatePassword, getUser, getAllUser, getMyData, newPassword }

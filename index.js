@@ -6,25 +6,48 @@ import comment from './components/comment/API.js'
 import order from './components/order/API.js'
 import product from './components/product/API.js'
 import morgan from 'morgan'
+import session from 'express-session'
+import redis from 'connect-redis'
+import { createClient } from 'redis'
 import { Server } from "socket.io";
 import { createServer } from "http";
 
 const app = express()
+let RedisStore = redis(session)
+
+let redisClient = createClient({
+  
+  password: 'TSxACFT8A0BVKsCEgV7Cd0UtNqLLkwfE',
+  url: 'redis://redis-11204.c91.us-east-1-3.ec2.cloud.redislabs.com:11204',
+  legacyMode: true
+})
+redisClient.connect().catch(console.error)
+app.use(session({
+  store: new RedisStore({
+
+    client: redisClient,
+    logErrors: true
+  }),
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+}))
+
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin:process.env.corsorg 
+    origin: process.env.corsorg
   }
 });
 
 io.on("connection", (socket) => {
-  socket.on('newmsg',value=>{
-    io.emit('showmsg',value)
+  socket.on('newmsg', value => {
+    io.emit('showmsg', value)
   })
-  socket.on('newbid',price=>{
-    io.emit('setnewprice',price)
+  socket.on('newbid', price => {
+    io.emit('setnewprice', price)
   })
-  
+
 });
 const port = process.env.PORT || 4000
 
@@ -53,4 +76,6 @@ app.use((req, res, next) => {
   res.status(404).send("404. Sorry can't find that! ")
 })
 
-httpServer.listen(port)
+httpServer.listen(port, () => {
+  console.log(port);
+})
