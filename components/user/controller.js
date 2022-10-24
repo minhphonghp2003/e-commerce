@@ -1,14 +1,15 @@
 import svc from './service.js'
 import passport from 'passport'
 import GoogleStrategy from 'passport-google-oauth20'
+import 'dotenv/config'
 
 let GGStr = GoogleStrategy.Strategy
 
 
 
 passport.use(new GGStr({
-    clientID: '87733065531-14hh3k9urhandt70085r9ievsetv2ole.apps.googleusercontent.com',
-    clientSecret: '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',
+    clientID: process.env.clientID,
+    clientSecret: process.env.clientSec,
     callbackURL: "/user/callback"
 },
     function (accessToken, refreshToken, profile, cb) {
