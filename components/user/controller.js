@@ -13,8 +13,7 @@ passport.use(new GGStr({
     callbackURL: "/user/callback"
 },
     function (accessToken, refreshToken, profile, cb) {
-
-        return cb(null, {profile,accessToken})
+        return cb(null, {profile})
 
     }
 ));
@@ -32,7 +31,7 @@ passport.deserializeUser(function (user, done) {
 
 
 const oauth = async (req, res, next) => {
-    return res.send(req.user)
+    return res.status(200).json(req.user)
 }
 
 const register = async (req, res, next) => {
