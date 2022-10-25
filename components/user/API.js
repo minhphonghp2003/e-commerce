@@ -9,10 +9,8 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 const router = express.Router()
 
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile','email'] }));
-router.get('/google/callback',passport.authenticate('google'), ctrler.GGoauth);
-router.get('/auth/facebook', passport.authenticate('facebook'));
-router.get('/facebook/callback',passport.authenticate('facebook'), ctrler.FBoauth);
+router.get('/auth/google', cors({ origin: process.env.corsorg }),passport.authenticate('google', { scope: ['profile','email'] }));
+router.get('/google/callback',cors({ origin: process.env.corsorg }),passport.authenticate('google'), ctrler.GGoauth);
 router.post('/register', cors({ origin: process.env.corsorg }), ctrler.register)
 router.post('/email', cors({ origin: process.env.corsorg }), ctrler.addResetEmail)
 router.get('/email', cors({ origin: process.env.corsorg }), ctrler.getResetEmail)
