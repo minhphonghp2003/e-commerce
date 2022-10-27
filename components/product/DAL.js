@@ -74,7 +74,16 @@ const udpateBid = async (product_id, customer_id, price) => {
 
 const getWinner = async (product_id) => {
   let data = await pool.query("select p.status, p.id as product_id, p.name as product_name,fullname,b.bidder as bidder,b.price,description,sku from public.product p join public.bidder b on p.id = b.product join public.user u on b.bidder = u.id where p.id = $1 order by price desc", [product_id])
+  if(!data.rows[0]){
+  let fake_data = {
+    status:'closed',
+    fullname:'',
+
+  }
+  return fake_data
+  }
   let status = data.rows[0].status
+  
   if(status!= 'sold'){
     let shipping_address = await order.getShippingAddress(data.rows[0].bidder)
     await order.addOrder(data.rows[0].bidder,product_id,shipping_address.id)

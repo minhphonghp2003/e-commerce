@@ -82,7 +82,7 @@ const getWinner = async (req, res, next) => {
         let winner = await svc.getWinner(product_id)
         return res.status(200).json(winner)
     } catch (error) {
-
+        console.log(error);
         next(error)
     }
 }
